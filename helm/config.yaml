@@ -1,0 +1,57 @@
+proxy:
+  secretToken: "1ceceb779b78db81ad076c603e7924f8e6164cf87dfe92f4f8dc135b130932f4"
+
+hub:
+  config:
+    DummyAuthenticator:
+      password: custreamz
+auth:
+  admin:
+    access: true
+    users:
+      - kratos
+cull:
+  enabled: true
+  timeout: 1800
+  every: 600
+
+singleuser:
+  image:
+    name: jupyter/minimal-notebook
+    tag: latest
+  defaultUrl: "/lab"
+  extraEnv:
+    tenant: kratos
+    profile: rapids-custreamz
+  memory:
+    limit: 2G
+    guarantee: 2G
+  cpu:
+    limit: 1
+    guarantee: 1
+  storage:
+    capacity: 5Gi
+    dynamic:
+      storageClass: gp2
+  lifecycleHooks:
+    postStart:
+      exec:
+        command:
+          - "sh"
+          - "-c"
+          - >
+            cd /home/jovyan && git clone https://github.com/chinmaychandak/jupyterhub-tests.git;
+            cp /home/jovyan/jupyterhub-tests/utilities/.condarc /home/jovyan;
+            rm -rf /home/jovyan/jupyterhub-tests;
+            conda install -y -c conda-forge streamz;
+  profileList:
+    - display_name: "cuStreamz"
+      description: "RAPIDS Profile"
+      default: true
+    - display_name: "Spark ML"
+      description: "Spark ML ETL Profile"
+      kubespawner_override:
+        image: jupyter/all-spark-notebook:latest
+        environment:
+          tenant: kratos
+          profile: spark-ml-etl
