@@ -48,7 +48,7 @@ singleuser:
             cd /home/jovyan && git clone https://github.com/chinmaychandak/jupyterhub-tests.git;
             cp /home/jovyan/jupyterhub-tests/utilities/.condarc /home/jovyan;
             rm -rf /home/jovyan/jupyterhub-tests;
-            conda install -y -c rapidsai -c nvidia -c conda-forge -c defaults custreamz=0.17 python=3.8 cudatoolkit=10.1;
+            conda install -y -q -c rapidsai -c nvidia -c conda-forge -c defaults custreamz=0.17 python=3.8 cudatoolkit=10.1;
   profileList:
     - display_name: "cuStreamz"
       description: "RAPIDS Profile"
