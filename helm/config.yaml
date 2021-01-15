@@ -5,6 +5,11 @@ hub:
   config:
     DummyAuthenticator:
       password: custreamz
+  extraConfig:
+    rapidsConfig.py: |
+      c.KubeSpawner.http_timeout = 900
+      c.KubeSpawner.start_timeout = 900
+
 auth:
   admin:
     access: true
@@ -17,20 +22,20 @@ cull:
 
 singleuser:
   image:
-    name: jupyter/minimal-notebook
+    name: cschranz/gpu-jupyter
     tag: latest
   defaultUrl: "/lab"
   extraEnv:
     tenant: kratos
     profile: rapids-custreamz
   memory:
-    limit: 2G
-    guarantee: 2G
+    guarantee: 4G
+    limit: 4G
   cpu:
-    limit: 1
     guarantee: 1
+    limit: 1
   storage:
-    capacity: 5Gi
+    capacity: 10Gi
     dynamic:
       storageClass: gp2
   lifecycleHooks:
@@ -43,7 +48,7 @@ singleuser:
             cd /home/jovyan && git clone https://github.com/chinmaychandak/jupyterhub-tests.git;
             cp /home/jovyan/jupyterhub-tests/utilities/.condarc /home/jovyan;
             rm -rf /home/jovyan/jupyterhub-tests;
-            conda install -y -c conda-forge streamz;
+            conda install -y -c rapidsai -c nvidia -c conda-forge -c defaults custreamz=0.17 python=3.8 cudatoolkit=10.1;
   profileList:
     - display_name: "cuStreamz"
       description: "RAPIDS Profile"
