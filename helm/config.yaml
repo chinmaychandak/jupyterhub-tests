@@ -50,9 +50,10 @@ singleuser:
             rm -rf /home/jovyan/jupyterhub-tests;
             conda install -y -q -c rapidsai -c nvidia -c conda-forge -c defaults custreamz=0.17 python=3.8 cudatoolkit=10.1;
   profileList:
-    - display_name: "cuStreamz"
-      description: "RAPIDS Profile"
+    - display_name: "GPU-Jupyter + RAPIDS cuStreamz"
+      description: "RAPIDS Profile based from GPU-Jupyter"
       default: true
+
     - display_name: "Spark ML"
       description: "Spark ML ETL Profile"
       kubespawner_override:
@@ -60,3 +61,30 @@ singleuser:
         environment:
           tenant: kratos
           profile: spark-ml-etl
+        lifecycle_hooks:
+          postStart:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - >
+                  cd /home/jovyan && git clone https://github.com/chinmaychandak/jupyterhub-tests.git;
+                  cp /home/jovyan/jupyterhub-tests/utilities/.condarc /home/jovyan;
+                  rm -rf /home/jovyan/jupyterhub-tests;
+
+    # TODO
+    - display_name: "Base RAPIDS"
+      description: "RAPIDS-only Profile"
+      kubespawner_override:
+        image: rapidsai/rapidsai:0.17-cuda10.1-runtime-ubuntu18.04-py3.8
+        environment:
+          tenant: kratos
+          profile: base-rapids
+        lifecycle_hooks:
+          postStart:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - >
+                  echo hello
