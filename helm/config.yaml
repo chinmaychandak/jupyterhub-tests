@@ -48,7 +48,10 @@ singleuser:
             cd /home/jovyan && git clone https://github.com/chinmaychandak/jupyterhub-tests.git;
             cp /home/jovyan/jupyterhub-tests/utilities/.condarc /home/jovyan;
             rm -rf /home/jovyan/jupyterhub-tests;
-            conda install -y -q -c rapidsai -c nvidia -c conda-forge -c defaults custreamz=0.17 python=3.7 cudatoolkit=10.1;
+            conda create -y -q -n custreamz -c rapidsai -c nvidia -c conda-forge -c defaults custreamz=0.17 python=3.7 cudatoolkit=10.1 ipykernel;
+#            . /opt/conda/etc/profile.d/conda.sh;
+#            . activate custreamz && python -m ipykernel install --user --name custreamz --display-name "Python (custreamz)";
+
   profileList:
     - display_name: "GPU-Jupyter + RAPIDS cuStreamz"
       description: "RAPIDS Profile based from GPU-Jupyter"
@@ -71,6 +74,9 @@ singleuser:
                   cd /home/jovyan && git clone https://github.com/chinmaychandak/jupyterhub-tests.git;
                   cp /home/jovyan/jupyterhub-tests/utilities/.condarc /home/jovyan;
                   rm -rf /home/jovyan/jupyterhub-tests;
+                  conda create -y -q -n py3.7 -c anaconda python=3.7 ipykernel;
+#                  . /opt/conda/etc/profile.d/conda.sh;
+#                  . activate py3.7 && python -m ipykernel install --user --name py3.7 --display-name "Python (py3.7)";
 
     # TODO
 #    - display_name: "Base RAPIDS"
