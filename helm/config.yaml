@@ -48,19 +48,19 @@ singleuser:
             cd /home/jovyan && git clone https://github.com/chinmaychandak/jupyterhub-tests.git;
             cp /home/jovyan/jupyterhub-tests/utilities/.condarc /home/jovyan;
             rm -rf /home/jovyan/jupyterhub-tests;
-            conda install -y -q -c rapidsai -c nvidia -c conda-forge -c defaults custreamz=0.17 python=3.8 cudatoolkit=10.1;
+            conda install -y -q -c rapidsai -c nvidia -c conda-forge -c defaults custreamz=0.17 python=3.7 cudatoolkit=10.1;
   profileList:
     - display_name: "GPU-Jupyter + RAPIDS cuStreamz"
       description: "RAPIDS Profile based from GPU-Jupyter"
       default: true
 
-    - display_name: "Spark ML"
-      description: "Spark ML ETL Profile"
+    - display_name: "Spark ETL, ML"
+      description: "Spark ETL, ML Profile"
       kubespawner_override:
-        image: jupyter/all-spark-notebook:latest
+        image: jupyter/minimal-notebook:latest
         environment:
           tenant: kratos
-          profile: spark-ml-etl
+          profile: spark-etl-ml
         lifecycle_hooks:
           postStart:
             exec:
@@ -73,18 +73,19 @@ singleuser:
                   rm -rf /home/jovyan/jupyterhub-tests;
 
     # TODO
-    - display_name: "Base RAPIDS"
-      description: "RAPIDS-only Profile"
-      kubespawner_override:
-        image: rapidsai/rapidsai:0.17-cuda10.1-runtime-ubuntu18.04-py3.8
-        environment:
-          tenant: kratos
-          profile: base-rapids
-        lifecycle_hooks:
-          postStart:
-            exec:
-              command:
-                - "sh"
-                - "-c"
-                - >
-                  echo hello
+#    - display_name: "Base RAPIDS"
+#      description: "RAPIDS-only Profile"
+#      kubespawner_override:
+#        image: rapidsai/rapidsai:0.17-cuda10.1-runtime-ubuntu18.04-py3.8
+#        environment:
+#          tenant: kratos
+#          profile: base-rapids
+#          JUPYTER_FG: true
+#        lifecycle_hooks:
+#          postStart:
+#            exec:
+#              command:
+#                - "sh"
+#                - "-c"
+#                - >
+#                  echo hello
