@@ -6,9 +6,13 @@ hub:
     DummyAuthenticator:
       password: custreamz
   extraConfig:
-    rapidsConfig.py: |
+    kratosConfig.py: |
       c.KubeSpawner.http_timeout = 1800
       c.KubeSpawner.start_timeout = 1800
+#      # If all users must start as root
+#      c.KubeSpawner.args = ['--allow-root']
+#      c.KubeSpawner.uid = 0
+#      c.KubeSpawner.gid = 0
 
 auth:
   admin:
@@ -28,6 +32,11 @@ singleuser:
   extraEnv:
     tenant: kratos
     profile: rapids-custreamz
+    # If users should be able to enter root using: "sudo -u root -s"
+#    GRANT_SUDO: "yes"
+#    NOTEBOOK_ARGS: "--allow-root"
+#  uid: 0
+#  cmd: start-singleuser.sh
   memory:
     guarantee: 4G
     limit: 4G
@@ -64,6 +73,9 @@ singleuser:
         environment:
           tenant: kratos
           profile: spark-etl-ml
+          # If users should be able to enter root using: "sudo -u root -s"
+#          GRANT_SUDO: "yes"
+#          NOTEBOOK_ARGS: "--allow-root"
         lifecycle_hooks:
           postStart:
             exec:
