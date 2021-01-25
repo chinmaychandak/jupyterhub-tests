@@ -2,9 +2,6 @@ proxy:
   secretToken: "1ceceb779b78db81ad076c603e7924f8e6164cf87dfe92f4f8dc135b130932f4"
 
 hub:
-  config:
-    DummyAuthenticator:
-      password: custreamz
   extraConfig:
     kratosConfig.py: |
       c.KubeSpawner.http_timeout = 1800
@@ -15,10 +12,16 @@ hub:
 #      c.KubeSpawner.gid = 0
 
 auth:
+  dummy:
+    password: custreamz
   admin:
     access: true
     users:
       - kratos
+  allowedUsers:
+    - cchandak
+    - nixs
+
 cull:
   enabled: true
   timeout: 1800
@@ -33,10 +36,13 @@ singleuser:
     tenant: kratos
     profile: rapids-custreamz
     # If users should be able to enter root using: "sudo -u root -s"
-#    GRANT_SUDO: "yes"
-#    NOTEBOOK_ARGS: "--allow-root"
-#  uid: 0
-#  cmd: start-singleuser.sh
+    GRANT_SUDO: "yes"
+    # If users should be able to enter root using: "sudo -u root -s"
+    NOTEBOOK_ARGS: "--allow-root"
+  # If users should be able to enter root using: "sudo -u root -s"
+  uid: 0
+  # If users should be able to enter root using: "sudo -u root -s"
+  cmd: start-singleuser.sh
   memory:
     guarantee: 4G
     limit: 4G
@@ -74,8 +80,9 @@ singleuser:
           tenant: kratos
           profile: spark-etl-ml
           # If users should be able to enter root using: "sudo -u root -s"
-#          GRANT_SUDO: "yes"
-#          NOTEBOOK_ARGS: "--allow-root"
+          GRANT_SUDO: "yes"
+          # If users should be able to enter root using: "sudo -u root -s"
+          NOTEBOOK_ARGS: "--allow-root"
         lifecycle_hooks:
           postStart:
             exec:
