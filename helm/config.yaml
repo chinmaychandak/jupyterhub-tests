@@ -101,7 +101,7 @@ singleuser:
           GRANT_SUDO: "yes"
           # If users should be able to enter root using: "sudo -u root -s"
           NOTEBOOK_ARGS: "--allow-root"
-          # If users should be able to enter root using: "sudo -u root -s"
+        # If users should be able to enter root using: "sudo -u root -s"
         uid: 0
         # If users should be able to enter root using: "sudo -u root -s"
         cmd: start-singleuser.sh
