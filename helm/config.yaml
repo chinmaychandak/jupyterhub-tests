@@ -12,15 +12,20 @@ hub:
 #      c.KubeSpawner.gid = 0
 
 auth:
+#  type: "custom"
+#  custom:
+#    className: "nativeauthenticator.NativeAuthenticator"
+#  NativeAuthenticator:
+#    open_signup: true
   dummy:
     password: custreamz
   admin:
     access: true
     users:
       - kratos
-  allowedUsers:
-    - cchandak
-    - nixs
+#  allowedUsers:
+#    - cchandak
+#    - nixs
 
 cull:
   enabled: true
@@ -32,17 +37,6 @@ singleuser:
     name: cschranz/gpu-jupyter
     tag: latest
   defaultUrl: "/lab"
-  extraEnv:
-    tenant: kratos
-    profile: rapids-custreamz
-    # If users should be able to enter root using: "sudo -u root -s"
-    GRANT_SUDO: "yes"
-    # If users should be able to enter root using: "sudo -u root -s"
-    NOTEBOOK_ARGS: "--allow-root"
-  # If users should be able to enter root using: "sudo -u root -s"
-  uid: 0
-  # If users should be able to enter root using: "sudo -u root -s"
-  cmd: start-singleuser.sh
   memory:
     guarantee: 4G
     limit: 4G
@@ -66,6 +60,17 @@ singleuser:
             conda create -y -q -n custreamz -c rapidsai -c nvidia -c conda-forge -c defaults custreamz=0.17 python=3.7 cudatoolkit=10.1 ipykernel;
 #            . /opt/conda/etc/profile.d/conda.sh;
 #            . activate custreamz && python -m ipykernel install --user --name custreamz --display-name "Python (custreamz)";
+  extraEnv:
+    tenant: kratos
+    profile: gpu-jupyter-rapids
+    # If users should be able to enter root using: "sudo -u root -s"
+    GRANT_SUDO: "yes"
+    # If users should be able to enter root using: "sudo -u root -s"
+    NOTEBOOK_ARGS: "--allow-root"
+  # If users should be able to enter root using: "sudo -u root -s"
+  uid: 0
+  # If users should be able to enter root using: "sudo -u root -s"
+  cmd: start-singleuser.sh
 
   profileList:
     - display_name: "GPU-Jupyter + RAPIDS cuStreamz"
@@ -76,13 +81,6 @@ singleuser:
       description: "Spark ETL, ML Profile"
       kubespawner_override:
         image: jupyter/minimal-notebook:latest
-        environment:
-          tenant: kratos
-          profile: spark-etl-ml
-          # If users should be able to enter root using: "sudo -u root -s"
-          GRANT_SUDO: "yes"
-          # If users should be able to enter root using: "sudo -u root -s"
-          NOTEBOOK_ARGS: "--allow-root"
         lifecycle_hooks:
           postStart:
             exec:
@@ -96,21 +94,46 @@ singleuser:
                   conda create -y -q -n py3.7 -c anaconda python=3.7 ipykernel;
 #                  . /opt/conda/etc/profile.d/conda.sh;
 #                  . activate py3.7 && python -m ipykernel install --user --name py3.7 --display-name "Python (py3.7)";
+        environment:
+          tenant: kratos
+          profile: spark-etl-ml
+          # If users should be able to enter root using: "sudo -u root -s"
+          GRANT_SUDO: "yes"
+          # If users should be able to enter root using: "sudo -u root -s"
+          NOTEBOOK_ARGS: "--allow-root"
+          # If users should be able to enter root using: "sudo -u root -s"
+        uid: 0
+        # If users should be able to enter root using: "sudo -u root -s"
+        cmd: start-singleuser.sh
 
-    # TODO
-#    - display_name: "Base RAPIDS"
-#      description: "RAPIDS-only Profile"
-#      kubespawner_override:
-#        image: rapidsai/rapidsai:0.17-cuda10.1-runtime-ubuntu18.04-py3.8
-#        environment:
-#          tenant: kratos
-#          profile: base-rapids
-#          JUPYTER_FG: true
-#        lifecycle_hooks:
-#          postStart:
-#            exec:
-#              command:
-#                - "sh"
-#                - "-c"
-#                - >
-#                  echo hello
+    - display_name: "RAPIDS Runtime"
+      description: "Dedicated RAPIDS Profile"
+      kubespawner_override:
+        image: rapidsai/rapidsai:0.17-cuda10.2-runtime-ubuntu18.04-py3.7
+        environment:
+          tenant: kratos
+          profile: rapids-custreamz
+          # If users should be able to enter root using: "sudo -u root -s"
+          GRANT_SUDO: "yes"
+          EXTRA_PIP_PACKAGES: jupyterhub
+        lifecycle_hooks:
+          postStart:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - >
+                  cd /home/jovyan && git clone https://github.com/chinmaychandak/jupyterhub-tests.git;
+                  cp /home/jovyan/jupyterhub-tests/utilities/.condarc /home/jovyan;
+                  rm -rf /home/jovyan/jupyterhub-tests;
+                  apt-get update && apt-get install bash-completion;
+        # Change to /rapids if needed
+        working_dir: "/home/jovyan"
+        # If users should be able to enter root using: "sudo -u root -s"
+        args: ["--allow-root", "--no-browser", "--NotebookApp.token=''"]
+        # If users should be able to enter root using: "sudo -u root -s"
+        cmd: ["jupyterhub-singleuser"]
+        # If users should be able to enter root using: "sudo -u root -s"
+        uid: 0
+        # If users should be able to enter root using: "sudo -u root -s"
+        gid: 0
