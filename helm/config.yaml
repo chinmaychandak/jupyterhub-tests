@@ -54,6 +54,7 @@ singleuser:
           GRANT_SUDO: "yes"
           EXTRA_PIP_PACKAGES: jupyterhub
           EXTRA_APT_PACKAGES: "bash-completion"
+          SHELL: /bin/bash
 
         lifecycle_hooks:
           postStart:
