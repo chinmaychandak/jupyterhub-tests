@@ -8,13 +8,13 @@ hub:
       c.KubeSpawner.start_timeout = 1800
 
 auth:
-#  type: "custom"
-#  custom:
-#    className: "nativeauthenticator.NativeAuthenticator"
-#  NativeAuthenticator:
-#    open_signup: true
-  dummy:
-    password: custreamz
+  type: "custom"
+  custom:
+    className: "nativeauthenticator.NativeAuthenticator"
+    config:
+      open_signup: true
+#  dummy:
+#    password: custreamz
   admin:
     access: true
     users:
@@ -44,7 +44,7 @@ singleuser:
     tag: 0.17-cuda10.2-runtime-ubuntu18.04-py3.7
 
   profileList:
-    - display_name: "RAPIDS Runtime"
+    - display_name: "RAPIDS"
       description: "Dedicated RAPIDS Profile"
       kubespawner_override:
 
