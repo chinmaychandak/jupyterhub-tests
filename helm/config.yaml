@@ -52,7 +52,7 @@ singleuser:
           tenant: kratos
           profile: rapids
           GRANT_SUDO: "yes"
-          EXTRA_PIP_PACKAGES: jupyterhub
+          EXTRA_PIP_PACKAGES: jupyterhub nbgitpuller
           EXTRA_APT_PACKAGES: "bash-completion"
           SHELL: /bin/bash
 
